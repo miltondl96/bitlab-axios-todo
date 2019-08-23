@@ -22,7 +22,7 @@ export default class Navigation extends Component {
                         </li>
                         <li className="nav-item p-2">
                             <Link className="nav-link" to="/user">
-                                Create User
+                                Users
                             </Link>
                         </li>
                     </ul>

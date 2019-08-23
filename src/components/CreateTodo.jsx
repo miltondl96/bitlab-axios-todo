@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 export default class CreateNote extends Component {
@@ -9,28 +8,23 @@ export default class CreateNote extends Component {
         users: [],
         userSelected: '',
         title: '',
-        content: '',
-        date: new Date(),
         editing: false,
-        _id: '',
+        id: '',
     }
 
     async componentDidMount () {
-        const res = await axios.get('http://localhost:4000/api/v1/users');
+        const res = await axios.get('https://fake-user-todo-api.herokuapp.com/api/users');
         this.setState({
-            users: res.data.map(user => user.username),
-            userSelected: res.data[0].username
+            users: res.data.map(user => user),
+            userSelected: res.data[0].name
         })
         if (this.props.match.params.id){
-            const res = await axios.get('http://localhost:4000/api/v1/notes/' + this.props.match.params.id)
-            
+            const res = await axios.get('https://fake-user-todo-api.herokuapp.com/api/todos/' + this.props.match.params.id)
             this.setState({
                 title: res.data.title,
-                content: res.data.content,
-                userSelected: res.data.author,
-                date: new Date(res.data.date),
+                userSelected: res.data.user_id,
                 editing: true,
-                _id: this.props.match.params.id
+                id: this.props.match.params.id
             })
         }
     }
@@ -39,14 +33,12 @@ export default class CreateNote extends Component {
         e.preventDefault();
         const newNote = {
             title: this.state.title,
-            content: this.state.content,
-            date: this.state.date,
-            author: this.state.userSelected,
+            user_id: this.state.userSelected,
         }
         if (this.state.editing) {
-            await axios.put('http://localhost:4000/api/v1/notes/' + this.state._id, newNote)
+            await axios.put('https://fake-user-todo-api.herokuapp.com/api/todos/' + this.state.id, newNote)
         }else{
-            await axios.post('http://localhost:4000/api/v1/notes', newNote)
+            await axios.post('https://fake-user-todo-api.herokuapp.com/api/todos', newNote)
         }
         this.props.history.push('/')
     }
@@ -57,17 +49,11 @@ export default class CreateNote extends Component {
         })
     }
 
-    onChangeDate = (date) => {
-        this.setState({
-            date
-        })
-    }
-
     render() {
         return (
             <div className="col-md-6 offset-md-3">
                 <div className="card card-body">
-                    <h4>Create a Note</h4>
+                   { this.state.editing ? <h4>Edit a ToDo</h4> : <h4>Create a ToDo</h4> }
                     
                     {/* SELECT USER  */}
                     <div className="form-group">
@@ -79,8 +65,8 @@ export default class CreateNote extends Component {
                         >
                             {
                                 this.state.users.map((user) => (
-                                    <option key={user} value={user}>
-                                        {user}
+                                    <option key={user.id} value={user.id}>
+                                        {user.name}
                                     </option>
                                 ))
                             }
@@ -94,29 +80,6 @@ export default class CreateNote extends Component {
                             name="title"
                             onChange={this.onInputChange}
                             value={this.state.title}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <textarea 
-                            name="content" 
-                            id="" 
-                            cols="30" 
-                            rows="10"
-                            className="form-control"
-                            placeholder="Content"
-                            required
-                            onChange={this.onInputChange}
-                            value={this.state.content}
-                        >
-                        </textarea>
-                    </div>
-
-                    <div className="form-group">
-                        <DatePicker 
-                            className="form-control"
-                            selected={this.state.date}
-                            onChange={this.onChangeDate}
                         />
                     </div>
 

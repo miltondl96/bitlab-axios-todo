@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Navigation from './components/Navigation';
-import NotesList from './components/NotesList';
-import CreateNote from './components/CreateNote';
+import TodoList from './components/TodoList';
+import CreateTodo from './components/CreateTodo';
 import CreateUser from './components/CreateUser';
 
 function App() {
@@ -14,9 +14,9 @@ function App() {
       <Navigation />
 
       <div className="container p-4">
-        <Route exact path="/" component={NotesList}/>
-        <Route path="/edit/:id" component={CreateNote}/>
-        <Route path="/create" component={CreateNote}/>
+        <Route exact path="/" component={TodoList}/>
+        <Route path="/edit/:id" component={CreateTodo}/>
+        <Route path="/create" component={CreateTodo}/>
         <Route path="/user" component={CreateUser}/>
       </div>
     </Router>  
